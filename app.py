@@ -54,7 +54,6 @@ def addSample():
 
     return jsonify(sample.serialize())
 
-
 @app.route('/samples', methods=['GET'])
 def getSamplesForID():
     device_uuid = request.args.get('device_uuid')
@@ -75,6 +74,8 @@ def getSamplesForID():
     if start_time is not None and end_time is not None:
         bundle_query = bundle_query.filter(
             SensorSample.sensor_reading_time.between(start_time, end_time))
+    elif start_time is None and end_time is not None or start_time is not None and end_time is None:
+        raise InvalidUsage("Both start_time and end_time are required for sensor_reading_time queries")
 
     results = bundle_query.all()
 
